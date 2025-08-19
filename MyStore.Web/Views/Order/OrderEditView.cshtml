@@ -1,0 +1,263 @@
+﻿@model OrderResponseDTO
+@{
+    ViewData["Title"] = "Edit order";
+}
+
+<div class="w-100">
+    <div class="d-flex justify-content-between align-items-center">
+        <h5>Edit Order</h5>
+        <button type="button" onclick="addNewItemRow()" class="btn btn-secondary">Add Row</button>
+    </div>
+    <hr />
+    <div>
+        <form id="orderEditForm">
+            <div class="row w-25">
+                <input type="hidden" name="orderId" value="@Model.OrderId"/>
+                <div class="col-sm-6">
+                    <label>Customer Name:</label>
+                    <label class="mt-1">Order Date:</label>
+                </div>
+                <div class="col-sm-6">
+                    <input type="text" name="customerName" readonly value="@Model.CustomerName">
+                    <input class="mt-1" type="date" name="orderDate" readonly value="@Model.OrderDate.ToString("yyyy-MM-dd")">
+                </div>
+            </div>
+
+            <div class="form-row mt-2">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Category Name</th>
+                            <th>Item</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Item Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="itemRowBody">
+                        @foreach(var rowItem in Model.Items)
+                        {
+                            <tr>
+                                <td>
+                                    <input type="hidden" name="id" value="@rowItem.Id"/>
+                                    <select name="categoryId" class="categoryDropdown form-control-sm" onchange="onCategorySelection(this)">
+                                        <option value="">Slect Category</option>
+                                        @foreach (var item in Model.Categories)
+                                        {
+                                            if(item.Id == rowItem.CategoryId)
+                                            {  <option value="@item.Id" selected>@item.CategoryName</option>  }
+                                            else
+                                            {  <option value="@item.Id">@item.CategoryName</option>  }
+                                        }
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="itemId" class="itemDropdown form-control-sm" onchange="onItemSelection(this)">
+                                        <option value="">Select Item</option>
+                                        @foreach(var item in Model.CategoryItems.Where(x=>x.CategoryId == rowItem.CategoryId))
+                                        {
+                                            if(item.Id == rowItem.ItemId)
+                                            {
+                                                <option value="@item.Id" selected>@item.ItemName</option>
+                                            }
+                                            else{
+                                            <option value="@item.Id">@item.ItemName</option>}
+                                        }
+                                    </select>
+                                </td>
+                                <td><input name="quantity" type="number" style="width:90px;" value="@rowItem.Quantity" onchange="onQuantityChange(this)" /></td>
+                                <td><input name="rate" value="@rowItem.Rate" readonly style="width:90px;border:none;background-color:white;" /></td>
+                                @{
+                                    var price = rowItem.Quantity * rowItem.Rate;
+                                    <td><input name="itemTotal" value="@price" readonly style="width:90px;border:none;background-color:white;" /></td>
+                                }
+                                <td><button type="button" class="btn" onclick="removeItemRow(this)"><i class="bi bi-trash-fill"></i></button></td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <button type="submit" class="btn btn-success">Save</button>
+                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+
+        $('#orderEditForm').validate({
+            rules:{
+                categoryId:{
+                    required:true
+                },
+                itemId:{
+                    required:true
+                },
+                quantity:{
+                    required:true
+                }
+
+            },
+            messages:{
+                categoryId:{
+                    required:"Category is required."
+                },
+                itemId:{
+                    required:"Item is required."
+                },
+                quantity:{
+                    required:"quantity is required."
+                }
+            },
+            submitHandler: function (form, event)
+            {
+                event.preventDefault();
+                var orderId = $('input[name="orderId"]').val();
+                debugger
+                var order = {
+                    items: []
+                };
+
+                $('#itemRowBody tr').each(function () {
+                    var row = $(this);
+                    var categoryID = row.find('select[name="categoryId"]').val();
+                    var itemID = row.find('select[name="itemId"]').val();
+                    if(categoryID && itemID && categoryID.length > 0 && itemID.length > 0)
+                    {
+                        order.items.push({
+                            categoryId: categoryID,
+                            itemId: itemID,
+                            quantity: row.find('input[name="quantity"]').val(),
+                            rate: row.find('input[name="rate"]').val()
+                        });
+                    }
+                });
+
+                if(order.items.length > 0){
+                    $.ajax({
+                        method: "PUT",
+                        url: "/Order/UpdateOrderItems?orderId="+orderId,
+                        contentType: "application/json",
+                        data: JSON.stringify(order),
+                        success: function (response) {
+                            $('body').html(response);
+                        },
+                        error: function (err) {
+                            console.log("error: ", err.responseText);
+                        }
+                    });
+                }
+                else{
+                    alert("Please add altest one item in order.");
+                }
+
+            }
+        });
+
+
+        function addNewItemRow(){
+            $('#itemRowBody').append(`
+               <tr>
+                    <td>
+                        <select name="categoryId" class="categoryDropdown form-control-sm" onchange="onCategorySelection(this)">
+                            <option value="">Slect Category</option>
+                            @foreach (var item in Model.Categories)
+                            {
+                                <option value="@item.Id">@item.CategoryName</option>
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select name="itemId" class="itemDropdown form-control-sm" onchange="onItemSelection(this)">
+                            <option value="">Select Item</option>
+                        </select>
+                    </td>
+                    <td><input name="quantity" type="number" style="width:90px;" onchange="onQuantityChange(this)" /></td>
+                    <td><input name="rate" value="0.00" readonly style="width:90px;border:none;background-color:white;" /></td>
+                    <td><input name="itemTotal" value="0.00" readonly style="width:90px;border:none;background-color:white;"/></td>
+                    <td><button type="button" class="btn" onclick="removeItemRow(this)"><i class="bi bi-trash-fill"></i></button></td>
+                </tr>
+            `);
+
+        }
+
+        function removeItemRow(e){
+            var target = e.parentElement.parentElement;
+            target.remove();
+        }
+
+        function onCategorySelection(e){
+            var categoryId = e.value;
+            var itemDropdown = e.parentElement.parentElement.children[1].children[0];
+            var priceInput = e.parentElement.parentElement.children[3].children[0];
+            if(categoryId.length > 0)
+            {
+                    itemDropdown.innerHTML = '<option value="">Select Item</option>'; // item dropdown reset options
+
+                if(!categoryId)
+                    return;
+
+                $.ajax({
+                    method:"GET",
+                    url:"/Item/GetItemsByCategoryId?categoryId="+categoryId,
+                    success:function(response){
+                        response.forEach((item)=>{
+                            var optElement = document.createElement('option');
+                            optElement.setAttribute("value",item.id);
+                            optElement.text = item.itemName;
+                            itemDropdown.appendChild(optElement);
+                        })
+                    },
+                    error:function(err){
+                        console.log("error: ",err.responseText);
+                    }
+
+                });
+            }
+            itemDropdown.innerHTML = '<option value="">Select Item</option>'; // item dropdown reset options
+            priceInput.setAttribute("value", "0.00"); //reset price
+            return;
+        }
+
+        function onItemSelection(e){
+            var itemId = e.value;
+            var inputTag = e.parentElement.parentElement.children[3].children[0];
+            if(itemId.length > 0)
+            {
+                $.ajax({
+                    method:"GET",
+                    url:"/Item/GetItemDataById?itemId="+itemId,
+                    success:function(response){
+                        inputTag.setAttribute("value", response.price);
+                    },
+                    error:function(err){
+                        console.log("error: ",err.responseText);
+                    }
+
+                });
+            }
+            inputTag.setAttribute("value", "0.00"); //reset price
+            return;
+        }
+
+        function onQuantityChange(e){
+            var qty = e.value;
+            var inputTag = e.parentElement.parentElement.children[3].children[0];
+            var price = inputTag.value;
+            var totalInputTag = e.parentElement.parentElement.children[4].children[0];
+            totalInputTag.setAttribute("value",qty*price);
+        }
+    </script>
+}

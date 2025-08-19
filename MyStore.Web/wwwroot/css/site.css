@@ -1,0 +1,71 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    margin-bottom: 60px;
+}
+
+.main-container {
+    display: flex;
+    flex: 1;
+}
+/* Sidebar Styles */
+.sidebar {
+    min-width: 220px;
+    max-width: 220px;
+    background-color: #343a40;
+    color: white;
+    padding-top: 1rem;
+}
+
+.sidebar .nav-link {
+    color: #bbb;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #495057;
+    color: white;
+}
+/* Main content */
+.content {
+    flex: 1;
+    padding: 1rem;
+}
+
+.error{
+    color:red;
+}

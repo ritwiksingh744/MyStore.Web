@@ -1,0 +1,94 @@
+﻿@{
+    ViewData["Title"] = "Category Grid";
+}
+
+<div class="w-100">
+    <div class="d-flex justify-content-between align-items-center">
+        <h5><i class="bi bi-clipboard-data"></i> Category Grid</h5>
+        <button id="saveCategoryBtn" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#categoryAddModal">Add</button>
+    </div>
+    <hr />
+    <div>
+        <table id="categoryGrid" class="display w-100" >
+            <thead>
+                <tr>
+                    <th>Category Name</th>
+                    <th>Create Date</th>
+                    <th>Action</th>
+                </tr>   
+            </thead>
+            
+        </table>
+    </div>
+</div>
+<input type="hidden" id="hiddenCategoryId" />
+@*-----------modal start here---------*@
+@* add new modal *@
+<div class="modal fade" id="categoryAddModal" aria-labelledby="categoryAddModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoryAddModalLabel">Add Category</h5>
+            </div>
+            <form id="categoryAddForm">
+                <div class="modal-body">
+                    <div id="formError" class="alert alert-danger d-none"></div>
+                    <label class="form-label">Category</label>
+                    <input type="text" name="categoryName" id="categoryName" class="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@* edit modal  *@
+<div class="modal fade" id="categoryEditModal" aria-labelledby="categoryEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoryEditModalLabel">Update Category</h5>
+            </div>
+            <form id="categoryUpdateForm">
+                <div class="modal-body">
+                    <div id="formEditError" class="alert alert-danger d-none"></div>
+                    <input type="hidden" name="id"/>
+                    <label class="form-label" for="categoryName">Category</label>
+                    <input type="text" name="categoryName" id="categoryName" class="form-control" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-success">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@* delete modal *@
+<div class="modal fade" id="categoryDeleteModal" aria-labelledby="categoryDeleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="categoryDeleteModalLabel">Remove Category</h5>
+            </div>
+                <div class="modal-body">
+                    <div id="formDeleteError" class="alert alert-danger d-none"></div>
+                    <p><strong>Do you want to remove category?</strong></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="btnCategoteDelete">Confirm</button>
+                </div>
+        </div>
+    </div>
+</div>
+@*-----------modal end here-----------*@
+
+
+
+@section Scripts{
+
+    <script src="~/js/category.js"></script>
+}
