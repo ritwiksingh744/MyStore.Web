@@ -21,8 +21,8 @@ It demonstrates a clean architecture with product categories, items, and orders 
 Or unzip the provided source code.
 
 2. **Open the Project**
-Launch Visual Studio
-Open the .sln file
+  - Launch Visual Studio
+  - Open the .sln file
 3. **Check Connection String**
   - Open appsettings.json
   - Update:
@@ -30,13 +30,13 @@ Open the .sln file
     ```bash
     "ConnectionStrings": {"DefaultConnection": "Server=YOUR_SERVER_NAME;Database=MyStoreDb;Trusted_Connection=True;MultipleActiveResultSets=true"}
 ## 
-3. **Apply Migrations**
+4. **Apply Migrations**
    - The project uses EF Core Code-First.
    - Open Package Manager Console in Visual Studio
    - Set Default Project → MyStore.Data
     - Run:
       update-database
-4. **Run the App**
+5. **Run the App**
   - Press F5 or Ctrl+F5
   - The app will open in your browser 🎉
 ## 🛠️ Tech Stack
