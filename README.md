@@ -25,7 +25,7 @@ Launch Visual Studio
 Open the .sln file
 3. **Check Connection String**
   - Open appsettings.json
-  - ## Update:
+  - Update:
   
     ```bash
     "ConnectionStrings": {"DefaultConnection": "Server=YOUR_SERVER_NAME;Database=MyStoreDb;Trusted_Connection=True;MultipleActiveResultSets=true"}
